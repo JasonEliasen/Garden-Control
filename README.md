@@ -1,6 +1,6 @@
 # Garden-Control
-Program for sending information to a Raspberry pi to actuate hose valves to water my garden.
+Program for sending information from a computer on the network to a Raspberry pi to actuate hose valves to water my garden.
 
-This is the first draft of my watering system. This is also my first program! 
+I am very new to programming and this is my first project written in Python (or any language for that matter)
 
-I am hoping to network with other people learning with github!
+I am hoping to network with other people learning with github so would love any and all feedback!
