@@ -89,6 +89,11 @@ class Connection:
 
 root = tkinter.Tk()
 
+set_1_1_string_variable = tkinter.StringVar()
+seconds_start_1_1 = 0
+seconds_end_1_1 = 0
+set_1_2_string_variable = tkinter.StringVar()
+
 
 # functions for buttons
 def start1():
@@ -172,7 +177,8 @@ def setup_window():
 
 
 def start_auto_1_window():
-    set_1_string_variable = tkinter.StringVar()
+
+    global set_1_1_string_variable
 
     def set1():
         def second_until(hour, minute):
@@ -181,6 +187,7 @@ def start_auto_1_window():
             water_time = water_time.replace(day=water_time.day+1, hour=hour, minute=minute)
             answer = water_time - today
             return answer.total_seconds()
+
         if pi.connection_established:
             beginning_1_entry = beginning_1.get()
             ending_1_entry = ending_1.get()
@@ -190,35 +197,49 @@ def start_auto_1_window():
             end_hour_1 = int(ending_1_entry[:2])
             end_minute_1 = int(ending_1_entry[2:])
 
-            if len(beginning_1_entry) == 4 and len(ending_1_entry) == 4 and begin_hour_1 < 25 and \
-                            begin_minute_1 < 61 and end_hour_1 < 25 and end_minute_1 < 61:
+            if len(beginning_1_entry) == 4 and len(ending_1_entry) == 4 and begin_hour_1 < 24 and \
+                            begin_minute_1 < 60 and end_hour_1 < 24 and end_minute_1 < 60:
 
-                set_1_string_variable.set(full_setup)
-                seconds_until_we_start = second_until(begin_hour_1, begin_minute_1)
-                seconds_until_we_end = second_until(end_hour_1, end_minute_1)
-                print("starting in %d and ending in %d" % (seconds_until_we_start, seconds_until_we_end))
-                thread1 = threading.Timer(int(seconds_until_we_start), hose1.turn_on)
-                thread2 = threading.Timer(int(seconds_until_we_end), hose1.turn_off)
-                thread3 = threading.Timer(int(seconds_until_we_end), set1)
-                thread1.start()
-                thread2.start()
-                thread3.start()
+                set_1_1_string_variable.set(full_setup)
+                global seconds_start_1_1
+                seconds_start_1_1 = second_until(begin_hour_1, begin_minute_1)
+                global seconds_end_1_1
+                seconds_end_1_1 = second_until(end_hour_1, end_minute_1)
+                print("starting in %d secs and ending in %d secs" % (seconds_start_1_1, seconds_end_1_1))
+                thread1_1 = threading.Timer(int(seconds_start_1_1), hose1.turn_on)
+                thread1_2 = threading.Timer(int(seconds_end_1_1), hose1.turn_off)
+                thread1_3 = threading.Timer(int(seconds_end_1_1), set1)
+                thread1_1.start()
+                thread1_2.start()
+                thread1_3.start()
+                print(thread1_1)
+                print('starting threads')
             else:
-                set_1_string_variable.set("use 24 hour clock (ex. 1230)")
+                set_1_1_string_variable.set("use 24 hour clock (ex. 1230)")
         else:
-            set_1_string_variable.set("Not connected to Pi")
+            set_1_1_string_variable.set("Not connected to Pi")
 
     auto_1_window = tkinter.Toplevel(root)
 
     beginning_1 = tkinter.Entry(auto_1_window)
     ending_1 = tkinter.Entry(auto_1_window)
     set_1 = tkinter.Button(auto_1_window, text="Set", width=10, command=set1)
-    set_1_label = tkinter.Label(auto_1_window, width=30, textvariable=set_1_string_variable)
+    set_1_label = tkinter.Label(auto_1_window, width=30, textvariable=set_1_1_string_variable)
 
     beginning_1.grid(row=0, column=0)
     ending_1.grid(row=0, column=1)
     set_1.grid(row=0, column=2)
     set_1_label.grid(row=0, column=3)
+
+    beginning_2 = tkinter.Entry(auto_1_window)
+    ending_2 = tkinter.Entry(auto_1_window)
+    set_2 = tkinter.Button(auto_1_window, text="Set", width=10)
+    set_2_label = tkinter.Label(auto_1_window, width=30, textvariable=set_1_2_string_variable)
+
+    beginning_2.grid(row=1, column=0)
+    ending_2.grid(row=1, column=1)
+    set_2.grid(row=1, column=2)
+    set_2_label.grid(row=1, column=3)
 
 logo = tkinter.PhotoImage(file="v1.gif")
 
